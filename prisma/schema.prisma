@@ -12,5 +12,9 @@ datasource db {
 
 
 model Post{
-  id String @id @default(cuid())
+  id String  @id @default(cuid())
+  title String 
+  content String
+  banner_url String
+  createdAt DateTime @default(now())
 }
