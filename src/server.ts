@@ -9,6 +9,10 @@ const prisma = new PrismaClient({
 
 async function bootstrap() {
   const fastify = Fastify({ logger: true });
+  
+  await fastify.register(cors, {
+    origin: true
+  })
 
   fastify.get("/posts", async () => {
     const posts = await prisma.post.findMany();
