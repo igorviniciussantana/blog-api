@@ -23,11 +23,13 @@ async function bootstrap() {
       banner_url: z.string(),
     });
 
-    const { title, content, banner_url } = createPostBody.parse(request.body);
-
-    await prisma.post.create({ data: { title, content, banner_url } });
-
-    return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`)
+    try {
+      const { title, content, banner_url } = createPostBody.parse(request.body);
+      await prisma.post.create({ data: { title, content, banner_url } });
+      return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`);
+    } catch (err) {
+      return reply.status(500).send("Não foi possível cadastrar o post" + err);
+    }
   });
 
   await fastify.listen({ port: 3333 });
