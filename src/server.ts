@@ -36,6 +36,14 @@ async function bootstrap() {
     }
   });
 
+  fastify.get("/posts/:postId", async (request :  any, reply) =>{
+
+const postReturn = await prisma.post.findUnique({where: {id: request.params.postId}})
+
+return {postReturn}
+
+  })
+
   await fastify.listen({ port: 3333 });
 }
 
