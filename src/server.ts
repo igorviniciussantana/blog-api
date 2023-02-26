@@ -1,33 +1,36 @@
 import Fastify from "fastify";
-import cors from '@fastify/cors'
-import {z} from 'zod'
-import { PrismaClient } from '@prisma/client'
+import cors from "@fastify/cors";
+import { z } from "zod";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient({
-    log: ['query'],
-})
+  log: ["query"],
+});
 
 async function bootstrap() {
   const fastify = Fastify({ logger: true });
 
+  fastify.get("/posts", async () => {
+    const posts = await prisma.post.findMany();
 
-fastify.get('/posts',  async() => {
-    const posts = await prisma.post.findMany()
+    return { posts };
+  });
 
-    return {posts}
-})
+  fastify.post("/posts", async (request, reply) => {
+    const createPostBody = z.object({
+      title: z.string(),
+      content: z.string(),
+      banner_url: z.string(),
+    });
 
-fastify.post('/posts', async(request, reply) => {
+    const { title, content, banner_url } = createPostBody.parse(request.body);
 
-  const createPostBody = z.object({
-    title: z.string(),
-    content: z.string(),
-    banner_url: z.string(),
-    createdAt: z.date()
-  })
-})
+    await prisma.post.create({ data: { title, content, banner_url } });
 
-  await fastify.listen({port: 3333})
+    return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`)
+  });
+
+  await fastify.listen({ port: 3333 });
 }
 
 bootstrap();
