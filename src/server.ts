@@ -9,10 +9,10 @@ const prisma = new PrismaClient({
 
 async function bootstrap() {
   const fastify = Fastify({ logger: true });
-  
+
   await fastify.register(cors, {
-    origin: true
-  })
+    origin: true,
+  });
 
   fastify.get("/posts", async () => {
     const posts = await prisma.post.findMany();
@@ -36,13 +36,13 @@ async function bootstrap() {
     }
   });
 
-  fastify.get("/posts/:postId", async (request :  any, reply) =>{
+  fastify.get("/posts/:postId", async (request: any, reply) => {
+    const postReturn = await prisma.post.findUnique({
+      where: { id: request.params.postId },
+    });
 
-const postReturn = await prisma.post.findUnique({where: {id: request.params.postId}})
-
-return {postReturn}
-
-  })
+    return { postReturn };
+  });
 
   await fastify.listen({ port: 3333 });
 }
