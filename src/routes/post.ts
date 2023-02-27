@@ -2,15 +2,12 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma";
 import { z } from "zod";
 import { FastifyRequest } from "fastify";
+import { getPosts } from "../controllers/postControllers";
 
 
 export async function postRoutes(fastify: FastifyInstance){
 
-    fastify.get("/posts", async () => {
-        const posts = await prisma.post.findMany();
-    
-        return { posts };
-      });
+    fastify.get("/posts", getPosts);
     
       fastify.post("/posts", async (request, reply) => {
         const createPostBody = z.object({
