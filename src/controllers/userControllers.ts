@@ -4,11 +4,12 @@ import { z } from "zod";
 
 export async function getUsers() {
   try {
-    const users = await prisma.users.findMany();
+
+    const users = await prisma.user.findMany();
 
     return { users };
   } catch (err) {
-    return "Não foi possível retornar os posts" + err;
+    return "Não foi possível retornar os usuários" + err;
   }
 }
 
@@ -27,7 +28,7 @@ export async function getSingleUser(
 
     return { userReturn };
   } catch (err) {
-    return "Não foi possível encontrar o post" + err;
+    return "Não foi possível encontrar o usuário" + err;
   }
 }
 
