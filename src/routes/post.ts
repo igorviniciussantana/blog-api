@@ -2,28 +2,14 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma";
 import { z } from "zod";
 import { FastifyRequest } from "fastify";
-import { getPosts } from "../controllers/postControllers";
+import { createPost, getPosts } from "../controllers/postControllers";
 
 
 export async function postRoutes(fastify: FastifyInstance){
 
     fastify.get("/posts", getPosts);
     
-      fastify.post("/posts", async (request, reply) => {
-        const createPostBody = z.object({
-          title: z.string(),
-          content: z.string(),
-          banner_url: z.string(),
-        });
-    
-        try {
-          const { title, content, banner_url } = createPostBody.parse(request.body);
-          await prisma.post.create({ data: { title, content, banner_url } });
-          return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`);
-        } catch (err) {
-          return reply.status(500).send("Não foi possível cadastrar o post" + err);
-        }
-      });
+      fastify.post("/posts", createPost);
     
       fastify.get(
         "/posts/:id",
