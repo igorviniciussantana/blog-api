@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { FastifyRequest } from "fastify";
 
 const prisma = new PrismaClient({
   log: ["query"],
@@ -36,13 +37,23 @@ async function bootstrap() {
     }
   });
 
-  fastify.get("/posts/:postId", async (request: any, reply) => {
-    const postReturn = await prisma.post.findUnique({
-      where: { id: request.params.postId },
-    });
+  fastify.get(
+    "/posts/:id",
+    async (
+      request: FastifyRequest<{
+        Params: {
+          id: string;
+        };
+      }>,
+      reply
+    ) => {
+      const postReturn = await prisma.post.findUnique({
+        where: { id: request.params.id },
+      });
 
-    return { postReturn };
-  });
+      return { postReturn };
+    }
+  );
 
   await fastify.listen({ port: 3333 });
 }
