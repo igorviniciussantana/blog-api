@@ -55,6 +55,30 @@ async function bootstrap() {
     }
   );
 
+  
+
+  fastify.put("/posts/:id", async (request : FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>, reply) => {
+
+    const createPostBody = z.object({
+      title: z.string(),
+      content: z.string(),
+      banner_url: z.string(),
+    });
+
+    const { title, content, banner_url } = createPostBody.parse(request.body);
+    await prisma.post.update({ where: {id: request.params.id}, data: { title, content, banner_url } });
+    
+    return reply.status(201).send(`Post ${title} foi atualizado com sucesso`);
+
+
+
+
+  })
+
   await fastify.listen({ port: 3333 });
 }
 
