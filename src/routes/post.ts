@@ -7,7 +7,7 @@ import {
   deletePost,
   getPosts,
   getSinglePost,
-  updatePosts,
+  updatePost,
 } from "../controllers/postControllers";
 
 export async function postRoutes(fastify: FastifyInstance) {
@@ -17,7 +17,7 @@ export async function postRoutes(fastify: FastifyInstance) {
 
   fastify.get("/posts/:id", getSinglePost);
 
-  fastify.put("/posts/:id", updatePosts);
+  fastify.put("/posts/:id", updatePost);
 
   fastify.delete("/posts/:id", deletePost);
 }

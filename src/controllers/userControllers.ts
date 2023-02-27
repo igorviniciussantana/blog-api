@@ -2,17 +2,17 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/prisma";
 import { z } from "zod";
 
-export async function getPosts() {
+export async function getUsers() {
   try {
-    const posts = await prisma.post.findMany();
+    const users = await prisma.users.findMany();
 
-    return { posts };
+    return { users };
   } catch (err) {
     return "Não foi possível retornar os posts" + err;
   }
 }
 
-export async function getSinglePost(
+export async function getSingleUser(
   request: FastifyRequest<{
     Params: {
       id: string;
@@ -21,17 +21,17 @@ export async function getSinglePost(
   reply: FastifyReply
 ) {
   try {
-    const postReturn = await prisma.post.findUnique({
+    const userReturn = await prisma.user.findUnique({
       where: { id: request.params.id },
     });
 
-    return { postReturn };
+    return { userReturn };
   } catch (err) {
     return "Não foi possível encontrar o post" + err;
   }
 }
 
-export async function createPost(
+export async function createUser(
   request: FastifyRequest<{
     Params: {
       id: string;
@@ -54,7 +54,7 @@ export async function createPost(
   }
 }
 
-export async function updatePost(
+export async function updateUser(
   request: FastifyRequest<{
     Params: {
       id: string;
@@ -81,7 +81,7 @@ export async function updatePost(
   }
 }
 
-export async function deletePost(
+export async function deleteUser(
   request: FastifyRequest<{
     Params: {
       id: string;
