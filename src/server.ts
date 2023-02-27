@@ -81,6 +81,18 @@ async function bootstrap() {
     }
   );
 
+fastify.delete("/posts/:id", async ( request: FastifyRequest<{
+  Params: {
+    id: string;
+  };
+}>,
+reply) => {
+
+  await prisma.post.delete({where: { id: request.params.id}})
+
+  return reply.status(201).send('Post deletado com sucesso!');
+})
+
   await fastify.listen({ port: 3333 });
 }
 
