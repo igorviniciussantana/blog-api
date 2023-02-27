@@ -3,9 +3,32 @@ import { prisma } from "../lib/prisma";
 import { z } from "zod";
 
 export async function getPosts() {
-  const posts = await prisma.post.findMany();
+  try {
+    const posts = await prisma.post.findMany();
 
-  return { posts };
+    return { posts };
+  } catch (err) {
+    return "Não foi possível retornar os posts" + err;
+  }
+}
+
+export async function getSinglePost(
+  request: FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply
+) {
+  try {
+    const postReturn = await prisma.post.findUnique({
+      where: { id: request.params.id },
+    });
+
+    return { postReturn };
+  } catch (err) {
+    return "Não foi possível encontrar o post" + err;
+  }
 }
 
 export async function createPost(
