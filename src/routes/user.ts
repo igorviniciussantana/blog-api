@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import {
-  createUser,
+//   createUser,
   deleteUser,
   getUsers,
   getSingleUser,
@@ -10,7 +10,7 @@ import {
 export async function userRoutes(fastify: FastifyInstance) {
   fastify.get("/users", getUsers);
 
-  fastify.post("/users", createUser);
+//   fastify.post("/users", createUser);
 
   fastify.get("/users/:id", getSingleUser);
 

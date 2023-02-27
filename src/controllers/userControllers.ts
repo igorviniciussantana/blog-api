@@ -31,28 +31,28 @@ export async function getSingleUser(
   }
 }
 
-export async function createUser(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
-  reply: FastifyReply
-) {
-  const createPostBody = z.object({
-    title: z.string(),
-    content: z.string(),
-    banner_url: z.string(),
-  });
+// export async function createUser(
+//   request: FastifyRequest<{
+//     Params: {
+//       id: string;
+//     };
+//   }>,
+//   reply: FastifyReply
+// ) {
+//   const createUserBody = z.object({
+//     name: z.string(),
+//     username: z.string(),
+//     banner_url: z.string(),
+//   });
 
-  try {
-    const { title, content, banner_url } = createPostBody.parse(request.body);
-    await prisma.post.create({ data: { title, content, banner_url } });
-    return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`);
-  } catch (err) {
-    return reply.status(400).send("Não foi possível cadastrar o post" + err);
-  }
-}
+//   try {
+//     const { name, username, banner_url } = createUserBody.parse(request.body);
+//     await prisma.post.create({ data: { title, content, banner_url } });
+//     return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`);
+//   } catch (err) {
+//     return reply.status(400).send("Não foi possível cadastrar o post" + err);
+//   }
+// }
 
 export async function updateUser(
   request: FastifyRequest<{
