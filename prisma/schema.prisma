@@ -28,3 +28,8 @@ model User {
   githubUrl    String?
   instagramUrl String?
 }
+
+model Category {
+  id   String @id @default(cuid())
+  name String
+}
