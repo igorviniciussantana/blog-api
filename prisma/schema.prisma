@@ -13,6 +13,11 @@ model Post {
   content    String
   banner_url String
   createdAt  DateTime @default(now())
+  userId String
+  categoryId String
+
+  user User @relation(fields: [userId], references: [id])
+
 }
 
 model User {
@@ -27,6 +32,8 @@ model User {
   description  String?
   githubUrl    String?
   instagramUrl String?
+
+  posts Post[]
 }
 
 model Category {
