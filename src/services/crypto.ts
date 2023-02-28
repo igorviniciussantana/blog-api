@@ -1,9 +1,13 @@
-import {AES} from 'crypto-ts'
+import {enc ,AES} from 'crypto-ts'
+
+const secret = process.env.MY_SECRET || '';
  
 // Encrypt
-var ciphertext = AES.encrypt('my message', 'secret key 123');
- 
+const ciphertext = AES.encrypt('santana123', secret);
+
+ console.log(ciphertext.toString());
 // Decrypt
-export var bytes  = AES.decrypt(ciphertext.toString(), 'secret key 123');
+
+export const bytes  = AES.decrypt(ciphertext.toString(), secret);
+export const plaintext = bytes.toString(enc.Utf8);
  
-console.log(bytes);

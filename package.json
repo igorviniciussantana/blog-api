@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^18.14.2",
     "prisma": "^4.10.1",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
@@ -19,6 +20,7 @@
     "@prisma/client": "^4.10.1",
     "crypto-ts": "^1.0.2",
     "fastify": "^4.13.0",
+    "node-env": "^0.1.6",
     "zod": "^3.20.6"
   }
 }
