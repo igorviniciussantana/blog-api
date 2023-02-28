@@ -17,6 +17,7 @@ model Post {
   categoryId String
 
   user User @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
 
 }
 
@@ -39,4 +40,6 @@ model User {
 model Category {
   id   String @id @default(cuid())
   name String
+
+  posts Post[]
 }
