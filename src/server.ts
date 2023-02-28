@@ -7,7 +7,6 @@ import { prisma } from "./lib/prisma";
 import { postRoutes } from "./routes/post";
 import { userRoutes } from "./routes/user";
 
-import { plaintext } from "./services/crypto";
 async function bootstrap() {
   const fastify = Fastify({ logger: true });
 
@@ -15,7 +14,6 @@ async function bootstrap() {
     origin: true,
   });
 
-  console.log(plaintext)
 
   await fastify.register(postRoutes)
   await fastify.register(userRoutes)
