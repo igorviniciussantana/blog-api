@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/prisma";
 import { z } from "zod";
+import { encrypt } from "../services/crypto";
 
 export async function getUsers() {
   try {
-
     const users = await prisma.user.findMany();
 
     return { users };
@@ -32,28 +32,34 @@ export async function getSingleUser(
   }
 }
 
-// export async function createUser(
-//   request: FastifyRequest<{
-//     Params: {
-//       id: string;
-//     };
-//   }>,
-//   reply: FastifyReply
-// ) {
-//   const createUserBody = z.object({
-//     name: z.string(),
-//     username: z.string(),
-//     banner_url: z.string(),
-//   });
+export async function createUser(
+  request: FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply
+) {
+  const createUserBody = z.object({
+    name: z.string(),
+    username: z.string(),
+    email: z.string().email(),
+    avatarUrl: z.string(),
+    description: z.string(),
+    password: z.string(),
+  });
 
-//   try {
-//     const { name, username, banner_url } = createUserBody.parse(request.body);
-//     await prisma.post.create({ data: { title, content, banner_url } });
-//     return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`);
-//   } catch (err) {
-//     return reply.status(400).send("Não foi possível cadastrar o post" + err);
-//   }
-// }
+  try {
+    const { name, username, email, avatarUrl, description, password } =
+      createUserBody.parse(request.body);
+    const encryptedPassword = encrypt(password);
+
+    await prisma.user.create({ data: { email, name, password: encryptedPassword, username, avatarUrl, description  } });
+    return reply.status(201).send(`Usuário ${name} foi cadastrado com sucesso`);
+  } catch (err) {
+    return reply.status(400).send("Não foi possível cadastrar o post" + err);
+  }
+}
 
 export async function updateUser(
   request: FastifyRequest<{
@@ -90,13 +96,11 @@ export async function deleteUser(
   }>,
   reply: FastifyReply
 ) {
+  try {
+    await prisma.post.delete({ where: { id: request.params.id } });
 
-  try{
-  await prisma.post.delete({ where: { id: request.params.id } });
-
-  return reply.status(201).send("Post deletado com sucesso!");
-}catch(err){
-  return reply.status(400).send("Não foi possível deletar o post" + err);
-
-}
+    return reply.status(201).send("Post deletado com sucesso!");
+  } catch (err) {
+    return reply.status(400).send("Não foi possível deletar o post" + err);
+  }
 }
