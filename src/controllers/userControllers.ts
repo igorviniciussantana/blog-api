@@ -9,98 +9,127 @@ export async function getUsers() {
 
     return { users };
   } catch (err) {
-    return "Não foi possível retornar os usuários" + err;
+    return { message: "Não foi possível retornar os usuários", error: err };
   }
 }
 
 export async function getSingleUser(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
+  request: FastifyRequest,
   reply: FastifyReply
 ) {
-  try {
-    const userReturn = await prisma.user.findUnique({
-      where: { id: request.params.id },
-    });
+  const getSingleUserParams = z.object({
+    id: z.string(),
+  });
 
+  const { id } = getSingleUserParams.parse(request.params);
+
+  const userReturn = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  if (userReturn) {
     return { userReturn };
-  } catch (err) {
-    return "Não foi possível encontrar o usuário" + err;
   }
+
+  return reply.status(400).send({
+    message: "Não foi possível retornar usuários",
+  });
 }
 
-export async function createUser(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
-  reply: FastifyReply
-) {
+export async function createUser(request: FastifyRequest, reply: FastifyReply) {
   const createUserBody = z.object({
     name: z.string(),
     username: z.string(),
     email: z.string().email(),
-    avatarUrl: z.string(),
-    description: z.string(),
     password: z.string(),
   });
 
-  try {
-    const { name, username, email, avatarUrl, description, password } =
-      createUserBody.parse(request.body);
-    const encryptedPassword = encrypt(password);
+  const { name, username, email, password } = createUserBody.parse(
+    request.body
+  );
 
-    await prisma.user.create({ data: { email, name, password: encryptedPassword, username, avatarUrl, description  } });
-    return reply.status(201).send(`Usuário ${name} foi cadastrado com sucesso`);
-  } catch (err) {
-    return reply.status(400).send("Não foi possível cadastrar o post" + err);
-  }
-}
+  const encryptedPassword = encrypt(password);
 
-export async function updateUser(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
-  reply: FastifyReply
-) {
-  const createPostBody = z.object({
-    title: z.string(),
-    content: z.string(),
-    banner_url: z.string(),
+  const userUsername = await prisma.user.findUnique({
+    where: {
+      username,
+    },
   });
 
-  try {
-    const { title, content, banner_url } = createPostBody.parse(request.body);
-    await prisma.post.update({
-      where: { id: request.params.id },
-      data: { title, content, banner_url },
+  if (userUsername) {
+    return reply.status(400).send({
+      message: "Esse usuário já existe.",
     });
-
-    return reply.status(201).send(`Post ${title} foi atualizado com sucesso`);
-  } catch (err) {
-    return reply.status(400).send("Não foi possível atualizar o post" + err);
   }
+
+  const userEmail = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (userEmail) {
+    return reply.status(400).send({
+      message: "Esse email já está sendo utilizado.",
+    });
+  }
+
+  await prisma.user.create({
+    data: {
+      email,
+      name,
+      username,
+      password: encryptedPassword,
+    },
+  });
+
+  return reply.status(201).send(`Usuário ${name} foi cadastrado com sucesso`);
 }
 
-export async function deleteUser(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
-  reply: FastifyReply
-) {
-  try {
-    await prisma.post.delete({ where: { id: request.params.id } });
+export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
+  const updateUserParams = z.object({
+    id: z.string(),
+  });
 
-    return reply.status(201).send("Post deletado com sucesso!");
-  } catch (err) {
-    return reply.status(400).send("Não foi possível deletar o post" + err);
-  }
+  const { id } = updateUserParams.parse(request.params);
+
+  const updateUserBody = z.object({
+    name: z.string(),
+    username: z.string(),
+    email: z.string().email(),
+    password: z.string(),
+    description: z.string(),
+    avatarUrl: z.string().url(),
+  });
+
+  const { name, username, email, password, description, avatarUrl } =
+    updateUserBody.parse(request.body);
+
+  await prisma.user.update({
+    where: { id },
+    data: {
+      name,
+      username,
+      email,
+      password: encrypt(password),
+      description,
+      avatarUrl,
+    },
+  });
+
+  return reply
+    .status(201)
+    .send({ message: `Usuário ${name} foi atualizado com sucesso` });
+}
+
+export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
+  const deleteUserParams = z.object({
+    id: z.string(),
+  });
+
+  const { id } = deleteUserParams.parse(request.params);
+
+  await prisma.user.delete({ where: { id } });
+
+  return reply.status(201).send({ message: "Usuário deletado com sucesso!" });
 }
