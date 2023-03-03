@@ -32,7 +32,7 @@ export async function getSingleUser(
   }
 
   return reply.status(400).send({
-    message: "Não foi possível retornar usuários",
+    message: "Não foi possível retornar o usuário",
   });
 }
 
@@ -79,7 +79,7 @@ export async function createUser(request: FastifyRequest, reply: FastifyReply) {
     },
   });
 
-  return reply.status(201).send(`Usuário ${name} foi cadastrado com sucesso`);
+  return reply.status(201).send({message: `Usuário ${name} foi cadastrado com sucesso`});
 }
 
 export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
