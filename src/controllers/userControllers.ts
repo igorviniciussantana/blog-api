@@ -56,11 +56,7 @@ export async function createUser(request: FastifyRequest, reply: FastifyReply) {
     },
   });
 
-  if (userUsername) {
-    return reply.status(400).send({
-      message: "Esse usuário já existe.",
-    });
-  }
+ 
 
   const userEmail = await prisma.user.findUnique({
     where: {
@@ -68,9 +64,9 @@ export async function createUser(request: FastifyRequest, reply: FastifyReply) {
     },
   });
 
-  if (userEmail) {
+ if (userUsername || userEmail) {
     return reply.status(400).send({
-      message: "Esse email já está sendo utilizado.",
+      message: "Esse usuário já existe.",
     });
   }
 
