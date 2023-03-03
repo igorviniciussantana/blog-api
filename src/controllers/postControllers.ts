@@ -32,11 +32,7 @@ export async function getSinglePost(
 }
 
 export async function createPost(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
+  request: FastifyRequest,
   reply: FastifyReply
 ) {
   const createPostBody = z.object({
