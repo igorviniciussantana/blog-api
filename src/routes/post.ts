@@ -18,7 +18,7 @@ export async function postRoutes(fastify: FastifyInstance) {
     onRequest: [authenticate]
   }, createPost);
 
-  fastify.get("/posts/:id", getSinglePost);
+  fastify.get("/posts/:id",  getSinglePost);
 
   fastify.put("/posts/:id", updatePost);
 

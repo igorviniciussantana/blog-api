@@ -2,6 +2,12 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/prisma";
 import { z } from "zod";
 
+
+
+
+
+
+
 export async function getPosts() {
   try {
     const posts = await prisma.post.findMany();
@@ -39,11 +45,12 @@ export async function createPost(
     title: z.string(),
     content: z.string(),
     banner_url: z.string(),
+    categoryId: z.string()
   });
 
   try {
-    const { title, content, banner_url } = createPostBody.parse(request.body);
-    await prisma.post.create({ data: { title, content, banner_url } });
+    const { title, content, banner_url, categoryId } = createPostBody.parse(request.body);
+    await prisma.post.create({ data: { title, content, banner_url, userId: request.user.sub, categoryId  } });
     return reply.status(201).send(`Post ${title} foi cadastrado com sucesso`);
   } catch (err) {
     return reply.status(400).send("Não foi possível cadastrar o post" + err);
