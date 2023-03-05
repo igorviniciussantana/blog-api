@@ -19,16 +19,19 @@ export async function getPosts() {
 
 
 export async function getSinglePost(
-  request: FastifyRequest<{
-    Params: {
-      id: string;
-    };
-  }>,
+  request: FastifyRequest,
   reply: FastifyReply
 ) {
+
+  const getSinglePostParams = z.object({
+    id: z.string(),
+  });
+
+  const { id } = getSinglePostParams.parse(request.params);
+
   try {
     const postReturn = await prisma.post.findUnique({
-      where: { id: request.params.id },
+      where: { id },
       include: {
         category: true,
         user: true,
