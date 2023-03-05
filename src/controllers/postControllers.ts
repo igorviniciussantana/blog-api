@@ -4,13 +4,19 @@ import { z } from "zod";
 
 export async function getPosts() {
   try {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+      include: {
+        category: true,
+        user: true,
+      },
+    });
 
     return { posts };
   } catch (err) {
     return "Não foi possível retornar os posts" + err;
   }
 }
+
 
 export async function getSinglePost(
   request: FastifyRequest<{
@@ -23,6 +29,10 @@ export async function getSinglePost(
   try {
     const postReturn = await prisma.post.findUnique({
       where: { id: request.params.id },
+      include: {
+        category: true,
+        user: true,
+      },
     });
 
     return { postReturn };

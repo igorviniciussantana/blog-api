@@ -36,6 +36,25 @@ export async function getSingleUser(
   });
 }
 
+export async function getUserPosts(request: FastifyRequest){
+
+  const getUserPostsParams = z.object({
+    userId: z.string(),
+  });
+
+  const { userId } = getUserPostsParams.parse(request.params);
+
+
+  const userPosts = await prisma.post.findMany({
+    where: {
+      userId
+    }
+  })
+
+  return { userPosts }
+
+}
+
 export async function createUser(request: FastifyRequest, reply: FastifyReply) {
   const createUserBody = z.object({
     name: z.string(),
