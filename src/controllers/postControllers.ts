@@ -17,7 +17,6 @@ export async function getPosts() {
   }
 }
 
-
 export async function getSinglePost(
   request: FastifyRequest,
   reply: FastifyReply

@@ -36,7 +36,7 @@ export async function createCategory(
 
   await prisma.category.create({
     data: {
-      name,
+      name: name.toLowerCase(),
     },
   });
 
