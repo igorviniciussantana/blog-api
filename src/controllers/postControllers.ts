@@ -8,6 +8,11 @@ export async function getPosts() {
       include: {
         category: true,
         user: true,
+        userFavorites: {
+          include:{
+            user: true
+          }
+        }
       },
     });
 
@@ -34,6 +39,11 @@ export async function getSinglePost(
       include: {
         category: true,
         user: true,
+        userFavorites: {
+          include:{
+            user: true
+          }
+        }
       },
     });
 

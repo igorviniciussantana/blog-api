@@ -6,7 +6,12 @@ import {
   getSingleUser,
   updateUser,
   getUserPosts,
+  favoritePost,
+  getFavoritesPosts,
+  removeFavorite,
 } from "../controllers/userControllers";
+import { authenticate } from "../plugins/authenticate";
+
 
 export async function userRoutes(fastify: FastifyInstance) {
   fastify.get("/users", getUsers);
@@ -15,7 +20,17 @@ export async function userRoutes(fastify: FastifyInstance) {
 
   fastify.get("/users/:id", getSingleUser);
 
+  fastify.get("/users/:userId/favorites", getFavoritesPosts);
+
   fastify.get("/users/posts/:userId", getUserPosts)
+
+  fastify.post("/users/:postId/favorite", {
+    onRequest: [authenticate]
+  }, favoritePost)
+
+  fastify.post("/users/:postId/favorite/remove", {
+    onRequest: [authenticate]
+  }, removeFavorite)
 
   fastify.put("/users/:id", updateUser);
 

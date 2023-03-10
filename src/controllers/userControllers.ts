@@ -5,7 +5,11 @@ import { encrypt } from "../services/crypto";
 
 export async function getUsers() {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      select: {
+        password: false,
+      },
+    });
 
     return { users };
   } catch (err) {
@@ -36,23 +40,89 @@ export async function getSingleUser(
   });
 }
 
-export async function getUserPosts(request: FastifyRequest){
+export async function getFavoritesPosts(request: FastifyRequest) {
+  const getFavoritesPostsParams = z.object({
+    userId: z.string(),
+  });
 
+  const { userId } = getFavoritesPostsParams.parse(request.params);
+
+  const userPosts = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      favorited: {
+        include: {
+          post: true
+        }
+      },
+    },
+  });
+
+  return { userPosts };
+}
+
+export async function getUserPosts(request: FastifyRequest) {
   const getUserPostsParams = z.object({
     userId: z.string(),
   });
 
   const { userId } = getUserPostsParams.parse(request.params);
 
-
   const userPosts = await prisma.post.findMany({
     where: {
-      userId
+      userId,
+    },
+  });
+
+  return { userPosts };
+}
+
+export async function favoritePost(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const getFavoritePostParams = z.object({
+    postId: z.string(),
+  });
+
+  const { postId } = getFavoritePostParams.parse(request.params);
+
+  await prisma.favorites.create({
+    data: {
+      postId,
+      userId: request.user.sub,
+    },
+  });
+
+  reply.status(201).send({
+    message: "Post favoritado com sucesso.",
+  });
+}
+
+export async function removeFavorite(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const getFavoritePostParams = z.object({
+    postId: z.string(),
+  });
+
+  const { postId } = getFavoritePostParams.parse(request.params);
+
+  await prisma.favorites.delete({
+   where: {
+    userId_postId: {
+      postId,
+      userId: request.user.sub
     }
-  })
+   }
+  });
 
-  return { userPosts }
-
+  reply.status(201).send({
+    message: "Favorito removido com sucesso.",
+  });
 }
 
 export async function createUser(request: FastifyRequest, reply: FastifyReply) {

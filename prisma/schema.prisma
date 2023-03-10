@@ -13,25 +13,38 @@ model Post {
   content    String
   banner_url String
   createdAt  DateTime @default(now())
-  userId String
+  userId     String
   categoryId String
+  views      Int      @default(0)
 
-  user User @relation(fields: [userId], references: [id])
-  category Category @relation(fields: [categoryId], references: [id])
-
+  user          User        @relation(fields: [userId], references: [id])
+  category      Category    @relation(fields: [categoryId], references: [id])
+  userFavorites Favorites[]
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  username     String   @unique
-  password     String
-  avatarUrl    String?
-  createdAt    DateTime @default(now())
-  description  String?
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  username    String   @unique
+  password    String
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  description String?
 
-  posts Post[]
+  posts     Post[]
+  favorited Favorites[]
+}
+
+model Favorites {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
 }
 
 model Category {
