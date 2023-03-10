@@ -72,14 +72,14 @@ $ npm run dev
    <td>
  /posts
    </td>
-   <td>nenhum</td>
+   <td>Nenhum</td>
    <td>GET</td>
    <td>Retorna todos os posts cadastrados.</td>
     </tr>
      <tr>
    <td>POST</td>
    <td>/posts</td>
-   <td>none</td>
+   <td>Nenhum</td>
    <td>POST</td>
    <td>Criação de um Post.</td>
     </tr> 
@@ -123,20 +123,20 @@ $ npm run dev
    <td>
  /me
    </td>
-   <td>nenhum</td>
+   <td>Nenhum</td>
    <td>GET</td>
    <td>Retorna os dados do usuário autenticado.</td>
     </tr>
      <tr>
    <td>AUTH</td>
    <td>/signin</td>
-   <td>none</td>
+   <td>Nenhum</td>
    <td>POST</td>
    <td>Autentica o usuário.</td>
     </tr> 
     </table>
     
-    <h3>Categorias</h3>
+  <h3>Categorias</h3>
     
 <table>
   <tr>
@@ -149,7 +149,7 @@ $ npm run dev
     <tr>
    <td>CATEGORIA</td>
    <td>/categories</td>
-   <td>nenhum</td>
+   <td>Nenhum</td>
    <td>GET</td>
    <td>Retorna todas as categorias.</td>
     </tr>
@@ -159,6 +159,13 @@ $ npm run dev
    <td>Nome da Categoria</td>
    <td>GET</td>
    <td>Retorna uma categoria por nome.</td>
+    </tr> 
+    <tr>
+   <td>CATEGORIA</td>
+   <td>/categories</td>
+   <td>Nenhum</td>
+   <td>POST</td>
+   <td>Cria uma nova categoria.</td>
     </tr> 
     </table>
 
